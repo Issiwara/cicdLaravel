@@ -45,7 +45,7 @@
                         </g>
                     </svg>
                 </div>
-                <h1>Laravel : CICD, github and AWS</h1>
+                <h1 style="color:white;">Laravel : CICD, github and AWS</h1>
                 <div class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg">
                     <div class="grid grid-cols-1 md:grid-cols-2">
                         <div class="p-6">
