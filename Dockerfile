@@ -1,18 +1,35 @@
+# Use an official PHP image as the base image
 FROM php:7.4-fpm
 
+# Set the working directory
+WORKDIR /app
+
+
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
-    libpq-dev
+    libzip-dev \
+    zip \
+    libpq-dev \
+    libonig-dev \
+    libxml2-dev
 
-RUN docker-php-ext-install pdo pdo_pgsql
+# Install composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-WORKDIR /var/www/html
+# Install Laravel dependencies
+RUN composer install --no-scripts --no-dev --no-autoloader
 
-COPY . /var/www/html
+# Copy the rest of the application code
+COPY . .
 
-RUN curl -sS https://getcomposer.org/installer | php \
-    && mv composer.phar /usr/local/bin/composer \
-    && composer install
+# Run composer again to generate autoload files and to optimize the class loading
+RUN composer dump-autoload --optimize
 
+# Expose the port 9000 to the host
+EXPOSE 9000
+
+# Set the command to run when the container starts
 CMD ["php-fpm"]
+
