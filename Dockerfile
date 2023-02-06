@@ -1,30 +1,20 @@
-# Use an official PHP image as the base image
-FROM php:7.4-fpm
+FROM php:8.0-apache
 
+RUN apt update \
+        && apt install -y \
+            g++ \
+            libicu-dev \
+            libpq-dev \
+            libzip-dev \
+            zip \
+            zlib1g-dev \
+        && docker-php-ext-install \
+            intl \
+            opcache \
+            pdo \
+            pdo_pgsql \
+            pgsql
 
-# Set the working directory in the container to /app
-WORKDIR /app
-
-# Copy the composer.json and composer.lock files to the container
-COPY composer.json composer.lock ./
-
-
-# Install dependencies with composer
-RUN apt-get update && apt-get install -y \
-    git \
-    zip \
-    unzip
-    
-RUN docker-php-ext-install pdo_mysql
+WORKDIR /var/www/laravel_docker
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-RUN composer install
-# Copy the rest of the application code to the container
-COPY . ./
-
-# Expose port 9000 and run the PHP-FPM process
-EXPOSE 80
-
-CMD ["php-fpm"]
-
