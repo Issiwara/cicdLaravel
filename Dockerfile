@@ -3,11 +3,11 @@ FROM php:7.4-apache
 
 WORKDIR /app
 
+COPY . .
 RUN docker-php-ext-install pdo_mysql
 RUN a2enmod rewrite
 
-COPY composer*.json .
-RUN composer install
+
 
 ADD . /var/www
 ADD ./public /var/www/html
