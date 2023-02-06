@@ -4,6 +4,8 @@ FROM php:7.4-fpm
 # Set the working directory
 WORKDIR /app
 
+# Copy the composer.json and composer.lock files
+COPY composer.json composer.lock ./
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
