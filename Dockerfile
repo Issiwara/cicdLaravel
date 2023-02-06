@@ -26,7 +26,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN composer install
 
 # Copy the Apache configuration file to the container
-COPY apache2.conf /etc/apache2/sites-available/000-default.conf
+COPY /var/www/html/apache2.conf /etc/apache2/sites-available/000-default.conf
 
 # Expose port 80 for web traffic
 EXPOSE 80
