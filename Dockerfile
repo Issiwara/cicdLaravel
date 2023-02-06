@@ -7,6 +7,10 @@ WORKDIR /app
 # Copy the composer.json and composer.lock files to the container
 COPY composer.json composer.lock ./
 
+
+RUN composer install
+
+
 # Install dependencies with composer
 RUN apt-get update && apt-get install -y \
     git \
@@ -16,8 +20,6 @@ RUN apt-get update && apt-get install -y \
 RUN docker-php-ext-install pdo_mysql
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-RUN composer install
 
 # Copy the rest of the application code to the container
 COPY . ./
