@@ -1,37 +1,37 @@
 # Use an official PHP image as the base image
-FROM php:7.4-fpm
+FROM php:7.4-apache
 
-# Set the working directory
-WORKDIR /app
+# Set working directory
+WORKDIR /var/www/html
 
-# Copy the composer.json and composer.lock files
-COPY composer.json composer.lock ./
+# Copy the application code to the container
+COPY . .
 
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
+    libicu-dev \
     libzip-dev \
     zip \
-    libpq-dev \
-    libonig-dev \
-    libxml2-dev
+    unzip
 
-# Install composer
+# Install PHP extensions
+RUN docker-php-ext-install \
+    intl \
+    zip
+
+# Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Install Laravel dependencies
-RUN composer install --no-scripts --no-dev --no-autoloader
+RUN composer install
 
-# Copy the rest of the application code
-COPY . .
+# Copy the Apache configuration file to the container
+COPY apache2.conf /etc/apache2/sites-available/000-default.conf
 
-# Run composer again to generate autoload files and to optimize the class loading
-RUN composer dump-autoload --optimize
+# Expose port 80 for web traffic
+EXPOSE 80
 
-# Expose the port 9000 to the host
-EXPOSE 9000
+# Start Apache when the container launches
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
 
-# Set the command to run when the container starts
-CMD ["php-fpm"]
 
